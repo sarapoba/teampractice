@@ -8,7 +8,7 @@ import java.util.Date;
 public class AucDto {
     @Getter
     @Builder
-    public static class MainRes{
+    public static class ListRes{
         private Long idx;
         private String name;
         private String category;
@@ -19,6 +19,7 @@ public class AucDto {
         private Date startAt;
     }
 
+    @Getter
     @Builder
     public static class RankRes{
         private Long idx;
@@ -27,6 +28,7 @@ public class AucDto {
         private int status;
     }
 
+    @Getter
     @Builder
     public static class SlideRes{
         private Long idx;

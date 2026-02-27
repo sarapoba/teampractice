@@ -52,8 +52,8 @@ public class AucProduct {
     @Column(nullable = false)
     private Long currentPrice;
 
-    public static AucDto.MainRes from(AucProduct entity) {
-        return AucDto.MainRes.builder()
+    public static AucDto.ListRes from(AucProduct entity) {
+        return AucDto.ListRes.builder()
                 .idx(entity.idx)
                 .name(entity.name)
                 .category(entity.category)

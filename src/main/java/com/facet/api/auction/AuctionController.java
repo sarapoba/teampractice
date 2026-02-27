@@ -18,7 +18,7 @@ public class AuctionController {
 
     @GetMapping("/list")
     private ResponseEntity list(){
-        List<AucDto.MainRes> productList = auctionService.list();
+        List<AucDto.ListRes> productList = auctionService.list();
 
         return ResponseEntity.ok(productList);
     }

@@ -12,9 +12,9 @@ import java.util.List;
 public class AuctionService {
     private final AuctionRepository auctionRepository;
 
-    public List<AucDto.MainRes> list() {
+    public List<AucDto.ListRes> list() {
         List<AucProduct> aucProductList = auctionRepository.findAllByStatusLessThanEqual(1);
-        List<AucDto.MainRes> mainAucProduct = aucProductList.stream().map(AucProduct::from).toList();
+        List<AucDto.ListRes> mainAucProduct = aucProductList.stream().map(AucProduct::from).toList();
         return mainAucProduct;
     }
 }
