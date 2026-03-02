@@ -22,5 +22,6 @@ public class Ask {
     private String email;
     private String title;
     private String contents;
-    private String answer;
+    private String reply;
+    private boolean reply_status;
 }

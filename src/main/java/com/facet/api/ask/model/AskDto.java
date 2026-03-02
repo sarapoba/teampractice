@@ -44,4 +44,25 @@ public class AskDto {
                     .build();
         }
     }
+
+    @Builder
+    @Getter
+    public static class listRes{
+        private String category;
+        private String title;
+        private String contents;
+        private String reply;
+        private boolean reply_status;
+
+        public static AskDto.listRes from(Ask entity){
+            return AskDto.listRes.builder()
+                    .category(entity.getCategory())
+                    .title(entity.getTitle())
+                    .contents(entity.getContents())
+                    .reply(entity.getReply())
+                    // 답변이 null이 아니면 true, 아니면 false
+                    .reply_status(entity.getReply() != null && !entity.getReply().isBlank())
+                    .build();
+        }
+    }
 }
