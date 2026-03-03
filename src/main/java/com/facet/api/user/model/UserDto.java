@@ -3,7 +3,47 @@ package com.facet.api.user.model;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.Map;
+
 public class UserDto {
+
+    @Getter
+    @Builder
+    // 소셜 로그인
+    public static class OAuth {
+        private String email;
+        private String name;
+        private String provider;
+        private boolean enable;
+        private String role;
+
+        public static OAuth from(Map<String, Object> attributes, String provider) {
+            String providerId = ((Long) attributes.get("id")).toString();
+            System.out.println(providerId);
+
+            String email = providerId + "@kakao.social";
+            Map properties = (Map) attributes.get("properties");
+            String name = (String) properties.get("nickname");
+
+            return OAuth.builder()
+                    .email(email)
+                    .name(name)
+                    .provider(provider)
+                    .enable(true)
+                    .role("ROLE_USER")
+                    .build();
+        }
+
+        public User toEntity() {
+            return User.builder()
+                    .email(this.email)
+                    .name(this.name)
+                    .password(this.provider)
+                    .enable(this.enable)
+                    .role(this.role)
+                    .build();
+        }
+    }
 
     @Getter
     public static class SignupReq {
