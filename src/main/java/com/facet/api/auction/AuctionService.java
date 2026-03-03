@@ -3,6 +3,8 @@ package com.facet.api.auction;
 import com.facet.api.auction.model.AucDto;
 import com.facet.api.auction.model.AucProduct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,9 +14,10 @@ import java.util.List;
 public class AuctionService {
     private final AuctionRepository auctionRepository;
 
-    public List<AucDto.ListRes> list() {
-        List<AucProduct> aucProductList = auctionRepository.findAllByStatusLessThanEqual(1);
-        List<AucDto.ListRes> mainAucProduct = aucProductList.stream().map(AucProduct::from).toList();
-        return mainAucProduct;
+    public AucDto.PageRes list(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<AucProduct> result = (Page<AucProduct>) auctionRepository.findAllByStatusLessThanEqual(1, pageRequest);
+
+        return AucDto.PageRes.from(result);
     }
 }
