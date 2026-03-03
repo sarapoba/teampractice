@@ -90,13 +90,14 @@ public class UserDto {
     public static class LoginRes {
         private Long idx;
         private String email;
-        private String name;
+        private String userName;
+        private String role;
 
         public static LoginRes from(User entity) {
             return LoginRes.builder()
                     .idx(entity.getIdx())
                     .email(entity.getEmail())
-                    .name(entity.getName())
+                    .userName(entity.getName())
                     .build();
         }
     }

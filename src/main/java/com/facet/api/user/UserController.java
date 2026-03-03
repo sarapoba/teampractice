@@ -40,7 +40,16 @@ public class UserController {
 
         if(user != null) {
             String jwt = jwtUtil.createToken(user.getIdx(), user.getUsername(), user.getRole());
-            return ResponseEntity.ok().header("Set-Cookie", "ATOKEN=" + jwt + "; Path=/").build();
+            UserDto.LoginRes rseult = UserDto.LoginRes.builder()
+                    .idx(user.getIdx())
+                    .email(user.getUsername())
+                    .userName(user.getName())
+                    .role(user.getRole())
+                    .build();
+
+            return ResponseEntity.ok()
+                    .header("Set-Cookie", "ATOKEN=" + jwt + "; Path=/")
+                    .body(rseult);
         }
 
         return ResponseEntity.ok("로그인 실패");

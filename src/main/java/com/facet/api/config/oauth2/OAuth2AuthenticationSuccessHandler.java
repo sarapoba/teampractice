@@ -26,7 +26,7 @@ public class OAuth2AuthenticationSuccessHandler
 
         String jwt = jwtUtil.createToken(user.getIdx(), user.getUsername(), user.getRole());
         response.addHeader("Set-Cookie", "ATOKEN=" + jwt + "; Path=/");
-        String redirectUrl = "http://localhost:5173/success";
+        String redirectUrl = "http://localhost:5173/";
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);
 
     }
