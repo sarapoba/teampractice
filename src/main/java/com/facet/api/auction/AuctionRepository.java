@@ -9,4 +9,6 @@ import java.util.List;
 
 public interface AuctionRepository extends JpaRepository<AucProduct, Long> {
     Page<AucProduct> findAllByStatusLessThanEqual(int attr0, Pageable pageable);
+    // AuctionRepository.java
+    Page<AucProduct> findAllByStatusLessThanEqualAndNameContaining(int status, String search, Pageable pageRequest);
 }
