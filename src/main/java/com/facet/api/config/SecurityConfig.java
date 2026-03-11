@@ -21,6 +21,9 @@ package com.facet.api.config;
 */
 
 import com.facet.api.config.filter.JwtFilter;
+import com.facet.api.config.oauth2.OAuth2AuthenticationSuccessHandler;
+import com.facet.api.config.oauth2.OAuth2AuthorizationRequestRepository;
+import com.facet.api.user.OAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +32,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -44,6 +48,9 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
     private final JwtFilter jwtFilter;
+    private final OAuth2UserService oAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2AuthorizationRequestRepository oAuth2AuthorizationRequestRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -59,6 +66,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+        http.sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+
+        http.oauth2Login(config -> {
+            config.authorizationEndpoint(endpoint ->
+                    endpoint.authorizationRequestRepository(oAuth2AuthorizationRequestRepository)
+            );
+
+            config.userInfoEndpoint(
+                    endpoint ->
+                            endpoint.userService(oAuth2UserService)
+            );
+            config.successHandler(oAuth2AuthenticationSuccessHandler);
+        });
+
         http.authorizeHttpRequests(
                 (auth) -> auth
                         .requestMatchers("/auction/list","/user/login", "/user/signup", "/user/verify").permitAll()
