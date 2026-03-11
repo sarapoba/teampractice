@@ -40,11 +40,13 @@ public class JwtFilter extends OncePerRequestFilter {
                     Long idx = jwtUtil.getUserIdx(cookie.getValue());
                     String username = jwtUtil.getUsername(cookie.getValue());
                     String role = jwtUtil.getRole(cookie.getValue());
+                    String name = jwtUtil.getName(cookie.getValue());
 
                     AuthUserDetails user = AuthUserDetails.builder()
                             .idx(idx)
                             .username(username)
                             .role(role)
+                            .name(name)
                             .build();
 
                     Authentication authentication = new UsernamePasswordAuthenticationToken(

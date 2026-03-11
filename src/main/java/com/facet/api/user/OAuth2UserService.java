@@ -24,7 +24,7 @@ public class OAuth2UserService
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        UserDto.OAuth dto = UserDto.OAuth.from(oAuth2User.getAttributes(), "kakao");
+        UserDto.OAuth dto = UserDto.OAuth.from(oAuth2User.getAttributes(), "{bcrypt}kakao");
 
         Optional<User> result = userRepository.findByEmail(dto.getEmail());
 

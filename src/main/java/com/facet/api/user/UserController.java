@@ -1,5 +1,6 @@
 package com.facet.api.user;
 
+import com.facet.api.common.model.BaseResponse;
 import com.facet.api.user.model.AuthUserDetails;
 import com.facet.api.user.model.UserDto;
 import com.facet.api.utils.JwtUtil;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -36,10 +38,11 @@ public class UserController {
                 new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword(), null);
 
         Authentication authentication = authenticationManager.authenticate(token);
+        System.out.println(authentication);
         AuthUserDetails user = (AuthUserDetails) authentication.getPrincipal();
 
         if(user != null) {
-            String jwt = jwtUtil.createToken(user.getIdx(), user.getUsername(), user.getRole());
+            String jwt = jwtUtil.createToken(user.getIdx(), user.getUsername(), user.getRole(), user.getName());
             UserDto.LoginRes rseult = UserDto.LoginRes.builder()
                     .idx(user.getIdx())
                     .email(user.getUsername())
@@ -61,4 +64,18 @@ public class UserController {
         // 인증 성공하면 프론트로 리다이렉트
         return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).location(URI.create("http://localhost:5173")).build();
     }
+
+    @GetMapping("/callback")
+    public  ResponseEntity callback(@AuthenticationPrincipal AuthUserDetails user){
+
+        UserDto.LoginRes rseult = UserDto.LoginRes.builder()
+                .idx(user.getIdx())
+                .email("kakao")
+                .userName(user.getName())
+                .role(user.getRole())
+                .build();
+
+        return ResponseEntity.ok(BaseResponse.success(rseult));
+    }
+
 }

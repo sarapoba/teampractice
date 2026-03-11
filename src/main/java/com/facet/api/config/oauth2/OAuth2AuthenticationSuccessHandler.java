@@ -24,9 +24,10 @@ public class OAuth2AuthenticationSuccessHandler
 
         AuthUserDetails user = (AuthUserDetails)authentication.getPrincipal();
 
-        String jwt = jwtUtil.createToken(user.getIdx(), user.getUsername(), user.getRole());
+        String jwt = jwtUtil.createToken(user.getIdx(), user.getUsername(), user.getRole(), user.getName());
         response.addHeader("Set-Cookie", "ATOKEN=" + jwt + "; Path=/");
-        String redirectUrl = "http://localhost:5173/";
+        String redirectUrl = "http://localhost:5173/kakaoCallBack";
+
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);
 
     }
