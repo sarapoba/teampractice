@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.Date;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -54,8 +53,8 @@ public class AucProduct {
     @Column(nullable = false)
     private Long currentPrice;
 
-    public static AucDto.ListRes from(AucProduct entity) {
-        return AucDto.ListRes.builder()
+    public static AucDto.ReadRes from(AucProduct entity) {
+        return AucDto.ReadRes.builder()
                 .idx(entity.idx)
                 .name(entity.name)
                 .category(entity.category)

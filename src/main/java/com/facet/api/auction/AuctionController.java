@@ -23,9 +23,15 @@ public class AuctionController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/read/{search}")
-    public ResponseEntity read(@PathVariable String search){
-        AucDto.PageRes dto = auctionService.read(0, 12, search);
+    @GetMapping("/search/{search}")
+    public ResponseEntity search(@PathVariable String search){
+        AucDto.PageRes dto = auctionService.search(0, 12, search);
+        return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/read/{prodIdx}")
+    public ResponseEntity read(@PathVariable Long prodIdx){
+        AucDto.ReadRes dto = auctionService.read(prodIdx);
         return ResponseEntity.ok(dto);
     }
 

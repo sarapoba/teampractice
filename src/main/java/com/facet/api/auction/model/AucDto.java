@@ -1,7 +1,9 @@
 package com.facet.api.auction.model;
 
+import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.domain.Page;
 
 import java.util.Date;
@@ -71,5 +73,39 @@ public class AucDto {
         private String name;
         private String image;
         private int status;
+    }
+
+    @Getter
+    @Builder
+    public static class ReadRes{
+        private Long idx;
+        private String category;
+        private String name;
+        private String brandName;
+        private String description;
+        private String image;
+        private int startPrice;
+        private Date startAt;
+        private Date endAt;
+        private int status;
+        private int bidIncrement;
+        private Long currentPrice;
+
+        public static ReadRes from(AucProduct entity) {
+            return ReadRes.builder()
+                    .idx(entity.getIdx())
+                    .category(entity.getCategory())
+                    .name(entity.getName())
+                    .brandName(entity.getBrandName())
+                    .description(entity.getDescription())
+                    .image(entity.getImage())
+                    .startPrice(entity.getStartPrice())
+                    .startAt(entity.getStartAt())
+                    .endAt(entity.getEndAt())
+                    .status(entity.getStatus())
+                    .bidIncrement(entity.getBidIncrement())
+                    .currentPrice (entity.getCurrentPrice())
+                    .build();
+        }
     }
 }

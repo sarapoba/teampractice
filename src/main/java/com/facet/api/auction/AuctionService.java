@@ -21,10 +21,15 @@ public class AuctionService {
         return AucDto.PageRes.from(result);
     }
 
-    public AucDto.PageRes read(int page, int size, String search){
+    public AucDto.PageRes search(int page, int size, String search){
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<AucProduct> result = (Page<AucProduct>) auctionRepository.findAllByStatusLessThanEqualAndNameContaining(1, search, pageRequest);
 
         return AucDto.PageRes.from(result);
+    }
+
+    public AucDto.ReadRes read(Long prodIdx) {
+        AucProduct entity = auctionRepository.findById(prodIdx).orElseThrow();
+        return AucDto.ReadRes.from(entity);
     }
 }
