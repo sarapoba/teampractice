@@ -45,6 +45,7 @@ dependencies {
 
     // 3. Actuator (애플리케이션 상태 및 지표 노출)
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
