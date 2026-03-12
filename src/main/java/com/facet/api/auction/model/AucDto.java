@@ -77,12 +77,12 @@ public class AucDto {
 
     @Getter
     @Builder
-    public static class ReadRes{
+    public static class DetailRes{
         private Long idx;
         private String category;
         private String name;
-        private String brandName;
         private String description;
+        private String brandName;
         private String image;
         private int startPrice;
         private Date startAt;
@@ -90,22 +90,12 @@ public class AucDto {
         private int status;
         private int bidIncrement;
         private Long currentPrice;
-
-        public static ReadRes from(AucProduct entity) {
-            return ReadRes.builder()
-                    .idx(entity.getIdx())
-                    .category(entity.getCategory())
-                    .name(entity.getName())
-                    .brandName(entity.getBrandName())
-                    .description(entity.getDescription())
-                    .image(entity.getImage())
-                    .startPrice(entity.getStartPrice())
-                    .startAt(entity.getStartAt())
-                    .endAt(entity.getEndAt())
-                    .status(entity.getStatus())
-                    .bidIncrement(entity.getBidIncrement())
-                    .currentPrice (entity.getCurrentPrice())
-                    .build();
-        }
+        private int bidCount;
+        private String origin;
+        private String material;
+        private String size;
+        private String shippingMethod;
+        private int shippingPrice;
+        private String shippingDuration;
     }
 }

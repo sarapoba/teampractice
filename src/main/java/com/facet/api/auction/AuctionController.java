@@ -1,6 +1,7 @@
 package com.facet.api.auction;
 
 import com.facet.api.auction.model.AucDto;
+import com.facet.api.common.model.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class AuctionController {
     ){
         AucDto.PageRes dto = auctionService.list(page, size);
 
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(BaseResponse.success(dto)  );
     }
 
     @GetMapping("/search/{search}")
@@ -29,10 +30,10 @@ public class AuctionController {
         return ResponseEntity.ok(dto);
     }
 
-    @GetMapping("/read/{prodIdx}")
-    public ResponseEntity read(@PathVariable Long prodIdx){
-        AucDto.ReadRes dto = auctionService.read(prodIdx);
-        return ResponseEntity.ok(dto);
+    @GetMapping("/detail/{prodIdx}")
+    public ResponseEntity detail(@PathVariable Long prodIdx){
+        AucDto.DetailRes dto = auctionService.detail(prodIdx);
+        return ResponseEntity.ok(BaseResponse.success(dto));
     }
 
 }

@@ -26,10 +26,10 @@ public class AucProduct {
     private String name;
 
     @Column(nullable = false)
-    private String brandName;
+    private String description;
 
     @Column(nullable = false)
-    private String description;
+    private String brandName;
 
     @Column(nullable = false)
     private String image;
@@ -53,16 +53,44 @@ public class AucProduct {
     @Column(nullable = false)
     private Long currentPrice;
 
-    public static AucDto.ReadRes from(AucProduct entity) {
-        return AucDto.ReadRes.builder()
-                .idx(entity.idx)
-                .name(entity.name)
-                .category(entity.category)
-                .brandName(entity.brandName)
-                .status(entity.status)
-                .image(entity.image)
-                .startPrice(entity.startPrice)
-                .startAt(entity.startAt)
+    @Column(nullable = false)
+    private int bidCount;
+
+    @Column(nullable = false)
+    private String origin;
+
+    @Column(nullable = false)
+    private String material;
+
+    private String size;
+
+    private String shippingMethod;
+
+    private int shippingPrice;
+
+    private String shippingDuration;
+
+    public static AucDto.DetailRes from(AucProduct entity) {
+        return AucDto.DetailRes.builder()
+                .idx(entity.getIdx())
+                .category(entity.getCategory())
+                .name(entity.getName())
+                .description(entity.getDescription())
+                .brandName(entity.getBrandName())
+                .image(entity.getImage())
+                .startPrice(entity.getStartPrice())
+                .startAt(entity.getStartAt())
+                .endAt(entity.getEndAt())
+                .status(entity.getStatus())
+                .bidIncrement(entity.getBidIncrement())
+                .currentPrice (entity.getCurrentPrice())
+                .bidCount(entity.getBidCount())
+                .origin(entity.getOrigin())
+                .material(entity.getMaterial())
+                .size(entity.getSize())
+                .shippingMethod(entity.getShippingMethod())
+                .shippingPrice(entity.getShippingPrice())
+                .shippingDuration(entity.getShippingDuration())
                 .build();
     }
 }
