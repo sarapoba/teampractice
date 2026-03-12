@@ -28,8 +28,8 @@ public class AuctionService {
         return AucDto.PageRes.from(result);
     }
 
-    public AucDto.ReadRes read(Long prodIdx) {
+    public AucDto.DetailRes detail(Long prodIdx) {
         AucProduct entity = auctionRepository.findById(prodIdx).orElseThrow();
-        return AucDto.ReadRes.from(entity);
+        return AucProduct.from(entity);
     }
 }
