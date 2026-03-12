@@ -153,6 +153,7 @@ public class AucDto {
     }
 
     @Setter
+    @Getter
     public static class BidReq{
         private Long aucProductIdx;
         private Long userIdx;
