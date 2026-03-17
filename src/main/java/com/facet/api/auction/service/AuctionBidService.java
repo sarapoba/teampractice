@@ -20,10 +20,11 @@ public class AuctionBidService {
         Bid entity = auctionBidRepository.save(dto.toEntity());
 
         // 2. 상품(AucProduct)의 현재가 업데이트하기
-        AucProduct product = auctionReadRepository.findById(dto.getAucProductIdx())
+        AucProduct product = auctionReadRepository.findByIdWithLock(dto.getAucProductIdx())
                 .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
 
         product.setCurrentPrice(dto.getBidPrice());
+        product.setBidCount(product.getBidCount() + 1);
 
         return AucDto.BidRes.from(entity);
     }
