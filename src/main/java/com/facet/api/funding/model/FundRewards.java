@@ -6,32 +6,32 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-@Getter
-@Entity
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FundingStory {
+@Builder
+@Entity
+@Getter
+public class FundRewards {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
     @Column(nullable = false)
-    private String keyPoint;
+    private String title;
 
     @Column(nullable = false)
-    private String material;
+    private String contents;
 
     @Column(nullable = false)
-    private String handMade;
+    private Long price;
 
     @Column(nullable = false)
-    private String projectStory;
+    private Integer stock;  // 남은 수량
 
-    @OneToOne(fetch = FetchType.LAZY)
+    private String tags; // 추천 배지
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "product_idx")
-    private FundingProduct fundingProduct;
+    private FundProduct fundProduct;
 
 }

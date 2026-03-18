@@ -9,28 +9,27 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class FundingMaker {
+@NoArgsConstructor
+public class FundStory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
     @Column(nullable = false)
-    private String experience;
+    private String keyPoint;
 
     @Column(nullable = false)
-    private String style;
+    private String material;
 
     @Column(nullable = false)
-    private String promise;
+    private String handMade;
 
     @Column(nullable = false)
-    private String makerStory;
+    private String projectStory;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "product_idx")
-    private FundingProduct fundingProduct;
-
+    private FundProduct fundProduct;
 
 }

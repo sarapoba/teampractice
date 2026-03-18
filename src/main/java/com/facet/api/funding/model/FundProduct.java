@@ -1,5 +1,6 @@
 package com.facet.api.funding.model;
 
+import com.facet.api.funding.order.model.FundOrdersItem;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.ColumnDefault;
@@ -9,7 +10,7 @@ import java.util.List;
 
 @Getter
 @Entity
-public class FundingProduct {
+public class FundProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
@@ -48,19 +49,21 @@ public class FundingProduct {
     @ColumnDefault(value="'FUNDING'")
     private String type;
 
-    @OneToMany(mappedBy = "fundingProduct", fetch = FetchType.LAZY)
-    List<FundingRewards> fundingRewardsList;
+    @OneToMany(mappedBy = "fundProduct", fetch = FetchType.LAZY)
+    List<FundRewards> fundRewardsList;
 
-    @OneToOne(mappedBy = "fundingProduct", fetch = FetchType.LAZY)
-    private FundingStory fundingStory;
+    @OneToOne(mappedBy = "fundProduct", fetch = FetchType.LAZY)
+    private FundStory fundStory;
 
-    @OneToOne(mappedBy = "fundingProduct", fetch = FetchType.LAZY)
-    private FundingMaker fundingMaker;
+    @OneToOne(mappedBy = "fundProduct", fetch = FetchType.LAZY)
+    private FundMaker fundMaker;
 
-    @OneToMany(mappedBy = "fundingProduct", fetch = FetchType.LAZY)
-    List<FundingProcess> fundingProcessList;
+    @OneToMany(mappedBy = "fundProduct", fetch = FetchType.LAZY)
+    private List<FundProcess> fundProcessList;
 
-    @OneToMany(mappedBy = "fundingProduct",fetch = FetchType.LAZY)
-    List<FundingImg> fundingImgList;
+    @OneToMany(mappedBy = "fundProduct",fetch = FetchType.LAZY)
+    private List<FundImg> fundImgList;
 
+    @OneToMany(mappedBy = "fundProduct",fetch = FetchType.LAZY)
+    private List<FundOrdersItem> items;
 }
