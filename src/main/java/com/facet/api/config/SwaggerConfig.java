@@ -38,5 +38,8 @@ public class SwaggerConfig {
                 @Schema(description = "입찰가는 현재 입찰가보다 높은 금액을 넣어야 합니다.", required = true, example = "50000")
                 private Long bid;
             }
+
+        >> Swagger API 명세서는 백엔드 실행 후 웹 브라우저에 아래와 같이 입력하면 확인할 수 있습니다.
+            http://localhost:8080/swagger-ui/index.html
     */
 }
