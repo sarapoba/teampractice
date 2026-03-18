@@ -1,6 +1,7 @@
 package com.facet.api.auction.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Getter;
@@ -158,6 +159,7 @@ public class AucDto {
     public static class BidReq{
         private Long aucProductIdx;
         private Long userIdx;
+        @Schema(description = "입찰가는 현재 입찰가보다 높은 금액을 넣어야 합니다.", required = true, example = "50000")
         private Long bidPrice;
 
         public Bid toEntity() {
