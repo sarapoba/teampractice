@@ -6,38 +6,32 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 
 @Getter
 @Entity
-public class Funding {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class FundingStory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
     @Column(nullable = false)
-    private String category;
+    private String keyPoint;
 
     @Column(nullable = false)
-    private String name;
+    private String material;
 
     @Column(nullable = false)
-    private String brand;
+    private String handMade;
 
     @Column(nullable = false)
-    private String img;
+    private String projectStory;
 
-    @Column(nullable = false)
-    private Long percent;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "product_idx")
+    private FundingProduct fundingProduct;
 
-    @Column(nullable = false)
-    private Long price;
-
-    @Column(nullable = false)
-    private Long supporters;
-
-    @Column(nullable = false)
-    private Long days;
-
-    @Column(nullable = false)
-    private String status;
 }
