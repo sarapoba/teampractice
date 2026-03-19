@@ -46,5 +46,12 @@ public class PointDto {
         private Long pointIdx;      //  1단계 응답에서 프론트가 받아갔던 db PK 번
 
     }
+
+    // 포인트 불러와 프론트에 표시
+    @Getter
+    @Builder
+    public static class CurrentRes {
+        private int currentPoint; // 현재 보유 포인트
+    }
 }
 
