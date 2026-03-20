@@ -16,7 +16,8 @@ public class AuctionBidService {
     private final AuctionReadRepository auctionReadRepository;
 
     @Transactional
-    public AucDto.BidRes bid(AucDto.BidReq dto) {
+    public AucDto.BidRes bid(AucDto.BidReq dto, Long userIdx) {
+        dto.setUserIdx(userIdx);
         Bid entity = auctionBidRepository.save(dto.toEntity());
 
         // 2. 상품(AucProduct)의 현재가 업데이트하기

@@ -3,9 +3,7 @@ package com.facet.api.auction.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
@@ -157,12 +155,16 @@ public class AucDto {
     }
 
     @Builder
-    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
     @Getter
     public static class BidReq{
         @Schema(description = "경매 상품은 1~10번 상품이 있습니다.", required = true, example = "1")
         private Long aucProductIdx;
+
+        @Setter
         private Long userIdx;
+
         @Schema(description = "입찰가는 현재 입찰가보다 높은 금액을 넣어야 합니다.", required = true, example = "50000")
         private Long bidPrice;
 
