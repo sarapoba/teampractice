@@ -20,6 +20,7 @@ public enum BaseResponseStatus {
     SIGNUP_INVALID_PASSWORD(false, 3004, "비밀번호는 대,소문자, 숫자, 특수문자가 포함되어야 합니다."),
     SIGNUP_INVALID_UUID(false, 3005, "유효하지 않은 인증값입니다. 이메일 인증을 다시 시도해주세요."),
     LOGIN_INVALID_USERINFO(false, 3006, "이메일이나 비밀번호를 확인해주세요."),
+    LOGIN_NOT_ENABLED(false, 3007, "이메일 인증을 받고 로그인을 다시 해주세요."),
 
 
     // 4000번대

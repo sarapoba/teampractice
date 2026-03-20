@@ -24,6 +24,7 @@ import com.facet.api.config.filter.JwtFilter;
 import com.facet.api.config.oauth2.OAuth2AuthenticationSuccessHandler;
 import com.facet.api.config.oauth2.OAuth2AuthorizationRequestRepository;
 import com.facet.api.user.OAuth2UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +37,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -85,10 +87,16 @@ public class SecurityConfig {
         http.authorizeHttpRequests(
                 (auth) -> auth
                         .requestMatchers("/auction/list","/user/login", "/user/signup", "/user/verify").permitAll()
+                        .requestMatchers("/board/reg","/auction/detail/*").authenticated()
                         .requestMatchers("/board/reg","/point/**").authenticated()
 //                        .anyRequest().authenticated()
                         .anyRequest().permitAll()
-        );
+        ).exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) -> {
+            // 리다이렉트 하지 않고, 401 상태 코드와 에러 메시지를 JSON으로 보냅니다.
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+            response.getWriter().write("{\"code\": \"AUTH_REQUIRED\", \"message\": \"로그인이 필요합니다.\"}");
+        }));
 
         http.csrf(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
@@ -110,5 +118,11 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // 모든 경로에 대해 CORS 적용
         return source;
+    }
+
+    @Bean
+    public LoginUrlAuthenticationEntryPoint loginUrlEntryPoint() {
+        // 기본적으로 302 리다이렉트를 처리해주는 스프링 시큐리티 클래스입니다.
+        return new LoginUrlAuthenticationEntryPoint("http://localhost:5173/user/login");
     }
 }
