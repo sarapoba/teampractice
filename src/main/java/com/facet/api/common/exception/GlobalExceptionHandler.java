@@ -4,6 +4,7 @@ import com.facet.api.common.model.BaseResponse;
 import com.facet.api.common.model.BaseResponseStatus;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +15,15 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity handleDisabledException(DisabledException e) {
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                BaseResponse.fail(BaseResponseStatus.LOGIN_NOT_ENABLED)
+        );
+    }
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity handleValidationException(MethodArgumentNotValidException e) {
         Map<String, String> errors = new HashMap<>();

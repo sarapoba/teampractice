@@ -5,6 +5,7 @@ import com.facet.api.user.model.AuthUserDetails;
 import com.facet.api.user.model.UserDto;
 import com.facet.api.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -66,7 +67,7 @@ public class UserController {
     }
 
     @GetMapping("/callback")
-    public  ResponseEntity callback(@AuthenticationPrincipal AuthUserDetails user){
+    public ResponseEntity callback(@AuthenticationPrincipal AuthUserDetails user){
 
         UserDto.LoginRes rseult = UserDto.LoginRes.builder()
                 .idx(user.getIdx())
@@ -76,6 +77,25 @@ public class UserController {
                 .build();
 
         return ResponseEntity.ok(BaseResponse.success(rseult));
+    }
+
+    // 토큰이 유효한지 확인하는 메소드
+    @GetMapping("/validate")
+    public ResponseEntity validate(
+            @RequestHeader("ATOKEN") String token
+    ){
+        if (token == null || !token.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("헤더가 없거나 형식이 잘못됨");
+        }
+
+        String isAuth = token.substring(7);
+
+        // 드디어 우리가 만든 검증기 작동!
+        if (jwtUtil.validateToken(isAuth)) {
+            return ResponseEntity.ok("유효한 토큰입니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
+        }
     }
 
 }

@@ -49,11 +49,12 @@ public class AucDto {
         private String startAt;
         private String endAt;
         private String status;
+        private int bidCount;
 
         public static ListRes from(AucProduct entity){
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime now = LocalDateTime.now().withNano(0);
             String currentStatus;
 
             if(now.isBefore(entity.getStartAt())) {
@@ -74,6 +75,7 @@ public class AucDto {
                     .startAt(entity.getStartAt().format(formatter))
                     .endAt(entity.getEndAt().format(formatter))
                     .status(currentStatus)
+                    .bidCount(entity.getBidCount())
                     .build();
         }
     }
@@ -154,9 +156,11 @@ public class AucDto {
         }
     }
 
+    @Builder
     @Setter
     @Getter
     public static class BidReq{
+        @Schema(description = "경매 상품은 1~10번 상품이 있습니다.", required = true, example = "1")
         private Long aucProductIdx;
         private Long userIdx;
         @Schema(description = "입찰가는 현재 입찰가보다 높은 금액을 넣어야 합니다.", required = true, example = "50000")

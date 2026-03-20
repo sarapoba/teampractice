@@ -72,4 +72,19 @@ public class JwtUtil {
 
         return claims.get("name", String.class);
     }
+
+    public boolean validateToken(String token) {
+        try {
+            // 토큰을 파싱해봅니다. 문제가 있으면 여기서 예외가 발생해요.
+            Jwts.parser()
+                    .verifyWith(getEncodedKey())
+                    .build()
+                    .parseSignedClaims(token);
+            return true; // 에러 없이 파싱되면 유효한 토큰!
+        } catch (Exception e) {
+            // 서명이 다르거나, 만료되었거나, 형식이 잘못되면 false 반환
+            System.out.println("토큰 검증 실패: " + e.getMessage());
+            return false;
+        }
+    }
 }
