@@ -1,24 +1,23 @@
 package com.facet.api.funding.order;
 
 import com.facet.api.common.model.BaseResponse;
-import com.facet.api.common.model.BaseResponseStatus;
+import com.facet.api.funding.order.model.FundOrders;
 import com.facet.api.funding.order.model.FundOrdersDto;
 import com.facet.api.user.model.AuthUserDetails;
+import io.portone.sdk.server.payment.PaymentClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import static com.facet.api.common.model.BaseResponseStatus.JWT_EXPIRED;
-
+@CrossOrigin(originPatterns = "*")
 @RequestMapping("/fundOrders")
 @RequiredArgsConstructor
 @RestController
 public class FundOrderController {
     private final FundOrdersService fundOrdersService;
+    private final FundOrdersRepository fundOrdersRepository;
+    private final PaymentClient pg;
 
 
 
@@ -28,18 +27,16 @@ public class FundOrderController {
             @AuthenticationPrincipal AuthUserDetails user,
             @RequestBody FundOrdersDto.OrdersReq dto
             ){
-        FundOrdersDto.OrdersRes result = fundOrdersService.create(user, dto);
+        FundOrders orders = fundOrdersRepository.save(dto.toEntity(user.toEntity()));
         // 주문자 idx, 결제 여부
-        return ResponseEntity.ok(BaseResponse.success(result));
+        return ResponseEntity.ok(FundOrdersDto.OrdersRes.from(orders));
     }
 
     @PostMapping("/verify")
     public ResponseEntity verify(
             @AuthenticationPrincipal AuthUserDetails user,
-            @RequestBody FundOrdersDto.VerifyReq dto
-    ) {
-        fundOrdersService.verify(user, dto);
-
+            @RequestBody FundOrdersDto.VerifyReq dto) {
+        fundOrdersService.verify(user,dto);
         return ResponseEntity.ok(BaseResponse.success("성공"));
     }
 

@@ -1,5 +1,6 @@
 package com.facet.api.funding.order;
 
+import com.facet.api.common.exception.BaseException;
 import com.facet.api.funding.FundingRepository;
 import com.facet.api.funding.model.FundProduct;
 import com.facet.api.funding.model.FundRewards;
@@ -20,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import static com.facet.api.common.model.BaseResponseStatus.*;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -31,26 +34,6 @@ public class FundOrdersService {
 
     private final PaymentClient pg;
 
-    public FundOrdersDto.OrdersRes create(AuthUserDetails user, FundOrdersDto.OrdersReq dto) {
-        // 주문한 리워드 불러오기
-        List<FundRewards> productList = fundRewardRepository.findAllById(dto.getFundIdxList());
-
-        FundOrders fundOrders = fundOrdersRepository.save(dto.toEntity(user.toEntity()));
-
-        // 주문한 상품을 하나씩 뽑아서 DB에 담는다
-        for(FundRewards Reward : productList){
-            FundOrdersItem fundOrdersItem = FundOrdersItem.builder()
-                    .fundRewards(Reward)
-                    .fundOrders(fundOrders)
-                    .build();
-            fundItemRepository.save(fundOrdersItem);
-        }
-
-        // 주문자 idx, 결제 여부
-        return FundOrdersDto.OrdersRes.from(fundOrders);
-    }
-
-
     // 결제 검증 및 완료 처리
     public void verify(AuthUserDetails user, FundOrdersDto.VerifyReq dto) {
 
@@ -59,7 +42,7 @@ public class FundOrdersService {
         // join()은 비동기 작업이 끝날때까지 기다렸다가 받아오겠다
         io.portone.sdk.server.payment.Payment payment = completableFuture.join();
 
-        System.out.println(payment);
+        // System.out.println(payment);
         // 가져온 payment 객체가 실제로 결제가 완료된 상태(PaidPayment) 인지 확인
         // 포트원에서 결제 이후 보내준 데이터를 customData에 넣는다.
         if(payment instanceof PaidPayment paidPayment) {
@@ -73,20 +56,53 @@ public class FundOrdersService {
 
             // id를 조회해서 정보를 가지고 온다.
             FundOrders orders = fundOrdersRepository.findById(ordersIdx).orElseThrow();
+            List<Long> rewards = orders.getOrdersItems().stream()
+                    .map(FundOrdersItem::getProductIdx)
+                    .toList();
 
-            // 상품을 하나씩 꺼내서 금액을 결제
-            int totalPrice = orders.getItems().stream()
-                    .map(FundOrdersItem::getFundRewards)
-                    .mapToInt(FundRewards::getPrice)
-                    .sum();
+            List<FundRewards> rewardsList = fundRewardRepository.findAllById(rewards);
 
-            // 금액을 검증하고 확정한다.
-            if(paidPayment.getAmount().getTotal() == totalPrice+3000) {
-                orders.setPaid(true);
-                orders.setPgPaymentId(dto.getPaymentId());
-                fundOrdersRepository.save(orders);
+
+            // 주문 상품에 하나씩 꺼내서 금액을 결제, 상품 금액 * 주문 수량
+            long totalPrice = 0;
+            for (FundOrdersItem item : orders.getOrdersItems()) {
+                // 현재 아이템의 ID와 일치하는 리워드 엔티티를 찾습니다.
+                FundRewards matchingReward = rewardsList.stream()
+                        .filter(r -> r.getIdx().equals(item.getProductIdx()))
+                        .findFirst()
+                        .orElseThrow(() -> new BaseException(NOT_FOUND_REWARD));
+
+                // 아이템에 실제 리워드 객체를 연결 (이걸 해야 getFundRewards()가 작동함)
+                item.setFundRewards(matchingReward);
+
+                // 금액 합산
+                totalPrice += (long) matchingReward.getPrice() * item.getQuantity();
             }
 
+            // 검증 완료 후 결제 정보 저장
+            if(paidPayment.getAmount().getTotal() == totalPrice+3000) {
+                orders.setStatus("PAID");
+                orders.setPgPaymentId(dto.getPaymentId());
+                fundOrdersRepository.save(orders);
+
+                // 각 리워드 아이템의 재고를 즉시 차감
+                for (FundOrdersItem item : orders.getOrdersItems()) {
+                    // item이 참조하고 있는 실제 리워드(상품) 엔티티를 가져옵니다.
+                    // (엔티티 구조에 따라 getFundRewards() 또는 getProduct() 등으로 호출)
+                    FundRewards reward = item.getFundRewards();
+
+                    // 재고 차감 로직 실행 (엔티티 내부에 구현된 메소드 호출)
+                    reward.reduceQuantity(item.getQuantity());
+
+                    // 변경된 재고를 DB에 반영 (Dirty Checking 덕분에 생략 가능할 수도 있지만 명시적으로 작성)
+                    fundRewardRepository.save(reward);
+                }
+                System.out.println(DONE_POINT);
+            }else {
+                // 결제 취소 및 취소 이벤트 발행
+                System.out.println(FAILED);
+            }
         }
     }
 }
+

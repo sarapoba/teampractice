@@ -1,5 +1,7 @@
 package com.facet.api.funding.model;
 
+import com.facet.api.common.exception.BaseException;
+import com.facet.api.common.model.BaseResponseStatus;
 import com.facet.api.funding.order.model.FundOrdersItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+
+import static com.facet.api.common.model.BaseResponseStatus.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,7 +33,7 @@ public class FundRewards {
     private int price;
 
     @Column(nullable = false)
-    private Integer stock;  // 남은 수량
+    private Integer quantity;  // 남은 수량
 
     private String tags; // 추천 배지
 
@@ -37,7 +41,14 @@ public class FundRewards {
     @JoinColumn(nullable = false, name = "product_idx")
     private FundProduct fundProduct;
 
-    @OneToMany(mappedBy = "fundRewards", fetch = FetchType.LAZY)
-    List<FundOrdersItem> ordersItems;
+    @OneToMany(mappedBy = "fundRewards")
+    private List<FundOrdersItem> itemList;
 
+    public void reduceQuantity(int quantity){
+        int restQuantity = this.quantity - quantity;
+        if(restQuantity < 0){
+            throw new BaseException(REWARD_QUANTITY_LACK);
+        }
+        this.quantity = restQuantity;
+    }
 }

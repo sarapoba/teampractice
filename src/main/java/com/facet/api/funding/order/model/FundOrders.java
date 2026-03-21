@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -17,14 +18,17 @@ public class FundOrders {
     private Long idx;
 
     @Setter
-    @ColumnDefault("false")
-    private boolean paid; // 결제 확인 여부
-
-    private Long paymentPrice; // 결제 금액
+    private String status; // PAID, CANCELLED
 
     @Setter
     private String pgPaymentId;
 
-    @OneToMany(mappedBy = "fundOrders",fetch = FetchType.LAZY)
-    private List<FundOrdersItem> items;
+    private Long ordersIdx;
+
+    private Long price; // 결제 금액
+
+    @OneToMany(mappedBy = "fundOrders",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<FundOrdersItem> ordersItems  = new ArrayList<>();
+
 }
