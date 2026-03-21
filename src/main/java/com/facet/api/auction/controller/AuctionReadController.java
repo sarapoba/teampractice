@@ -13,6 +13,15 @@ import org.springframework.web.bind.annotation.*;
 public class AuctionReadController {
     private final AuctionReadService auctionReadService;
 
+    @GetMapping("/mainList")
+    private ResponseEntity mainList(
+            @RequestParam(required = true, defaultValue = "0") int page,
+            @RequestParam(required = true, defaultValue = "10") int size
+    ){
+        AucDto.PageRes dto = auctionReadService.list(page, size);
+
+        return ResponseEntity.ok(BaseResponse.success(dto)  );
+    }
     @GetMapping("/list")
     private ResponseEntity list(
             @RequestParam(required = true, defaultValue = "0") int page,
