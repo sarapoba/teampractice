@@ -51,6 +51,7 @@ public class UserDto {
                     .password(this.provider)
                     .enable(this.enable)
                     .role(this.role)
+                    .point(0)
                     .build();
         }
     }
