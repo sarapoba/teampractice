@@ -91,7 +91,7 @@ public class UserController {
                 .role(user.getRole())
                 .build();
 
-        return ResponseEntity.ok(BaseResponse.success(rseult));
+        return ResponseEntity.ok(rseult);
     }
 
     // 토큰이 유효한지 확인하는 메소드

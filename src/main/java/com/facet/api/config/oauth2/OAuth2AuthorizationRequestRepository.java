@@ -43,6 +43,17 @@ public class OAuth2AuthorizationRequestRepository
         cookie.setMaxAge(((int) Duration.ofSeconds(300L).toSeconds()));
 
         response.addCookie(cookie);
+
+        // 프론트에서 보낸 경로 추출
+        String redirectUriAfterLogin = request.getParameter("redirect_uri");
+        if (redirectUriAfterLogin != null && !redirectUriAfterLogin.isBlank()) {
+            Cookie redirectCookie = new Cookie("REDIRECT_URI", redirectUriAfterLogin);
+            redirectCookie.setPath("/");
+            redirectCookie.setHttpOnly(true);
+            redirectCookie.setSecure(true); // HTTPS 사용 시
+            cookie.setMaxAge(((int) Duration.ofSeconds(300L).toSeconds()));  // 5분 유효
+            response.addCookie(redirectCookie);
+        }
     }
 
     @Override
