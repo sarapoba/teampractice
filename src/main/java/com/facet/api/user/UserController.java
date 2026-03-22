@@ -91,7 +91,7 @@ public class UserController {
                 .role(user.getRole())
                 .build();
 
-        return ResponseEntity.ok(BaseResponse.success(rseult));
+        return ResponseEntity.ok(rseult);
     }
 
     // 토큰이 유효한지 확인하는 메소드
@@ -111,6 +111,22 @@ public class UserController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
         }
+    }
+
+    @GetMapping("/getuserinfo")
+    public ResponseEntity getUserInfo(
+            @AuthenticationPrincipal AuthUserDetails user){
+        UserDto.UserInfoRes result = userService.getUserInfo(user.getUsername());
+        return ResponseEntity.ok(BaseResponse.success(result));
+    }
+
+    @PostMapping("/updateuserinfo")
+    public ResponseEntity updateUserInfo(
+            @AuthenticationPrincipal AuthUserDetails user,
+            @RequestBody UserDto.UserInfoReq dto
+    ) {
+        UserDto.UserInfoRes result = userService.updateUserInfo(user.getUsername(), dto);
+        return ResponseEntity.ok(BaseResponse.success(result));
     }
 
 }
